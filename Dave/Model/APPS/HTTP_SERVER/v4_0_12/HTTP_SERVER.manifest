@@ -1,0 +1,269 @@
+package Model.APPS.HTTP_SERVER.v4_0_12;
+
+/*
+ Copyright (c) 2015-2017, Infineon Technologies AG
+ All rights reserved.
+					  
+ Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+ following conditions are met:
+									   
+ Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+ disclaimer.
+  
+ Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+ disclaimer in the documentation and/or other materials provided with the distribution.
+  
+ Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote
+ products derived from this software without specific prior written permission.
+									   
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+									   
+ To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with
+ Infineon Technologies AG: dave@infineon.com. */
+/*************** Revision History **********************************************
+ Version        Date          Description
+ 
+   4.0.2       31-Mar-2016   Initial version for DAVEv4<br>
+   4.0.4       25-Apr-2016   Changed minimum ETH_LWIP version to v4.0.6<br>
+   4.0.6       21-Jul-2016   Fixed multiple file load defects<br>
+                             Added information about generating ROM filesystem for custom web pages
+                             in usage section of the APP documentation.<br>
+   4.0.8       28-Jul-2016   Corrected web page transmission problem in RTOS mode.<br>
+   4.0.10      27-Oct-2016   Add option to avoid sending the SSI tag.<br>
+                             Make post_buffer word aligned in HTTP_SERVER_POST_RESP_t.<br>
+   4.0.12	   19-Jun-2017   Add check for RTOS minimum requirements                          
+ *******************************************************************************/
+// Import statements
+import ifx.davex.app.manifest.*
+
+class  HTTP_SERVER extends HTTP_SERVER_GUI {
+
+	 /* Note  : Following APP properties are mandatory and important */
+	 
+	 /* Begin : APP property section */
+	
+	/**
+	 * APP version
+	 * Format: a string with three digit separated by a dot.
+	 */
+	def version            = '4.0.12'
+	
+	/**
+	 * APP categories declaration. 
+	 * It is list of strings. Subcategories are separated by slash.
+	 * No limits on number of categories and subcategories depth.
+	 */
+	def categoriesDescription = ["Communication/Ethernet"] 
+
+	/** 
+	 * Minimum DAVE version required for this APP.
+	 * 
+	 * It is string with three digit separated by a dot.
+	 */
+	def minDaveVersion           = '4.1.2'
+	
+	/** 
+	 * Keywords used by search feature in APPs selection view
+	 * 
+	 * It is a list of string.
+	 */
+	def keywords      = ['ETH', 'LWIP', 'ARP', 'IP', 'TCP','HTTP', 'SERVER', 'ALL']
+	
+	/** 
+	 * softwareIDs is used to declare which devices are compatible with this APP.
+	 * It is a map with key a string containing a pattern that shall match the SW id of
+	 * the device and as value the minimal version of the APP.
+	 */
+	
+    /**
+     * Any step of XMC4500F144 and XMC4400F144
+	 * Any step of XMC4400F100 and XMC4400F64
+	 * Any step, any variant and any packages of XMC1300
+	 */
+	def softwareIDs       = [
+		"XMC4.8.*.(E196|F144|F100).*":"1.0.0",
+		"XMC4.7.*.(E196|F144|F100).*":"1.0.0",
+		"XMC4.5.00.(E144|F144|F100).*":"1.0.0",
+		"XMC4.4.00.(F100|F64).*":"1.0.0",
+		"XMC4.3.00.F100.*":"1.0.0",]
+	
+	/**
+	 * Singleton property:
+	 * When it is true the APP can be instantiated only once. 
+	 */
+	def singleton     = true
+
+
+	/**
+	 * initProvider property
+	 * It shall be true to add a call to <AppName>_Init() 
+	 */
+	def initProvider  = true
+	
+	/**
+	 * Deprecated APP
+	 * Set it to true to indicate that the APP shall be not used for new projects.
+	 */
+	def deprecated    = false
+	
+	/**
+	 * Sharable property.
+	 * It shall be true to allows multiple APPs to require the same instance of this APP.
+	 */
+	def sharable      = false
+
+	/**
+	 *  APP function description.
+	 */
+	def description = """HTTP server is used to store, process and deliver web pages to clients
+using ethernet interface."""
+	
+	/* End   : APP property section */
+	
+	/* Begin : User APP property section */
+	MRequiredApp appres_lwip
+	MRequiredApp appres_fatfs
+	
+	/* End   : User APP property section */
+
+	/* APP Constructor */
+	public HTTP_SERVER(DaveEnv daveEnv) {
+
+		appres_lwip = MRequiredApp("ETH_LWIP", "LWIP APP", RSHARABLE, "4.0.6")
+		appres_fatfs = MRequiredApp("FATFS", "FAT file system APP", RSHARABLE, "4.0.2", MF({gcheck_fatfs_en.value},Boolean))
+		
+		MF MF_rtos_used = MF({appres_lwip.getVal(["gcheck_rtos_en","value"])},Boolean)
+		MF MF_cgi_used = MF({gcheck_cgi_en.value},Boolean)
+		MF MF_ssi_used = MF({gcheck_ssi_en.value},Boolean)
+		MF MF_post_used = MF({gcheck_post_en.value},Boolean)
+		MF MF_fatfs_used = MF({gcheck_fatfs_en.value},Boolean)
+		MF MF_FATFS_drives = MF({
+			if(gcheck_fatfs_en.value)
+			{
+				if(appres_fatfs.getVal(["gcombo_volumes","value"]) == "3")
+				{
+					return ["0","1","2"]
+				}
+				else if(appres_fatfs.getVal(["gcombo_volumes","value"]) == "2")
+				{
+					return ["0","1"]
+				}
+				else
+				{
+					return ["0"]
+				}
+			}
+			else
+			{
+				return ["0"]
+			}
+		},List)
+		
+		/*Enable configuration of stack size if RTOS is used*/
+		gcombo_http_th_pr.enabled = MF_rtos_used
+		glabel_http_th_pr.enabled = MF_rtos_used
+		/*Enable configuration stack size if RTOS is used*/
+		ginteger_http_th_stksz.enabled = MF_rtos_used
+		glabel_http_th_stksz.enabled = MF_rtos_used
+		/*Enable selection of number of connections only if RTOS is used*/
+		ginteger_http_thr_cnt.enabled = MF_rtos_used
+		glabel_http_thr_cnt.enabled = MF_rtos_used
+		ggroup_rtos.enabled = MF_rtos_used
+		/*Enable CGI param count if CGI is enabled*/
+		glabel_cgi_params.enabled = MF_cgi_used
+		ginteger_cgi_params.enabled = MF_cgi_used
+		/*Enable SSI widgets if SSI is enabled*/
+		glabel_ssi_tag_len.enabled = MF_ssi_used
+		ginteger_ssi_tag_len.enabled = MF_ssi_used
+		glabel_ssi_len.enabled = MF_ssi_used
+		ginteger_ssi_len.enabled = MF_ssi_used
+		gcheck_send_ssi_tag.enabled = MF_ssi_used
+		/*FATFS related checks*/
+		glabel_drive.enabled = MF_fatfs_used
+		gcombo_drive.enabled = MF_fatfs_used
+		gcombo_drive.options = MF_FATFS_drives
+		/*Enable POST widgets*/
+		glabel_post_cb.enabled = MF_post_used
+		gstring_post_cb.enabled = MF_post_used
+		glabel_post_buf.enabled = MF_post_used
+		ginteger_post_buf.enabled = MF_post_used
+		
+		/*If ETH_LWIP and FATFS have uncommon system
+		 * then show error*/
+		gmessage_rtos.visible = MF(
+		{
+			if(gcheck_fatfs_en.value)
+			{
+				/*If LWIP uses RTOS then FATFS also should be configured to use RTOS*/
+				if(appres_lwip.getVal(["gcheck_rtos_en","value"]))
+				{
+					if(appres_fatfs.getVal(["gcheck_rtos","value"]) == false)
+					{
+						return true
+					}
+					else
+					{
+						return false
+					}
+				}
+				else
+				{
+					if(appres_fatfs.getVal(["gcheck_rtos","value"]) == true)
+					{
+						return true
+					}
+					else
+					{
+						return false
+					}
+				}
+			}
+			else
+			{
+				return false
+			}
+		},Boolean)
+		gmessage_rtos.text = MF({
+			if(gmessage_rtos.visible)
+			{
+				if(appres_fatfs.getVal(["gcheck_rtos","value"]) == false)
+				{
+					return "Please enable RTOS mode in FATFS APP"
+				}
+				else
+				{
+					return "Please disable RTOS mode in FATFS APP"
+				}
+			}},String)
+		
+	}
+	
+	// File Generation
+	def generateFiles(){
+		copy("makefsdata/fs", "makefsdata/fs")
+		copy("makefsdata/readme.txt", "makefsdata/readme.txt")
+		copy("makefsdata/makefsdata.exe", "makefsdata/makefsdata.exe")
+		copy("makefsdata/fsdata.dat", "fsdata.dat")
+		copy("http_server.h", "http_server.h")
+		copy("http_server.c", "http_server.c")
+		copy("fs.c", "fs.c")
+		copy("fsdata.h", "fsdata.h")
+		generate("http_server_confh.tmpl", "http_server_conf.h")
+		generate("http_server_confc.tmpl", "http_server_conf.c")
+		generate("http_server_externh.tmpl", "http_server_extern.h")
+		generate("fsh.tmpl", "fs.h")
+		generate("httpd_structsh.tmpl", "httpd_structs.h")
+		generate("httpdh.tmpl", "httpd.h")
+		generate("httpdc.tmpl", "httpd.c")
+	}
+	
+	/**
+	 * Add main code here
+	 */
+}

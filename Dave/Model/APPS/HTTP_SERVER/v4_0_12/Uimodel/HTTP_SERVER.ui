@@ -1,0 +1,122 @@
+<p1:Tab  xmlns="http://www.eclipse.org/xwt/presentation" xmlns:x="http://www.eclipse.org/xwt" xmlns:p1="clr-namespace:com.ifx.davex.ui.controls.app" x:Class="e" layout="{x:Null}">
+	<p1:TabFolder bounds="5, 5, 600, 593">
+		<p1:GTab text="General Settings" widgetName="tab_general_settings" visible="true" enabled="true" manifestObj="true">
+			<p1:GTab.control>
+				<p1:Tab>
+					<p1:Tab.layout>
+						<GridLayout numColumns="3"/>
+					</p1:Tab.layout>
+					<p1:GLabel text="Port number:" visible="true" manifestObj="true" widgetName="glabel_port_number"/>
+					<p1:GInteger x:Style="NONE" minValue="1" maxValue="65535" mandatory="(com.ifx.davex.ui.controls.util.AppUiConstants).FALSE" format="(com.ifx.davex.ui.controls.util.AppUiConstants).DEC" manifestObj="true" widgetName="ginteger_port_number" toolTipText="TCP socket port number to listen for HTTP connections" value="80" description="Defines the TCP port number on which the HTTP server listens for connections from HTTP clients.">
+						<p1:GInteger.layoutData>
+							<GridData widthHint="66"/>
+						</p1:GInteger.layoutData>
+					</p1:GInteger>
+					<Label/>
+					<p1:GLabel text="Name of the server:" visible="true" manifestObj="true" widgetName="glabel_server_name"/>
+					<p1:GString x:Style="BORDER" mandatory="(com.ifx.davex.ui.controls.util.AppUiConstants).FALSE" manifestObj="true" widgetName="gstring_server_name" value="lwIP" toolTipText="This string will be transmitted as part of the &#13;&#10;HTTP response to indicate the name of server." description="HTTP frame contains a header field with the name of the server. String provided in this field will be used as the server name in the responses provided by the server.">
+						<p1:GString.layoutData>
+							<GridData horizontalSpan="2" widthHint="55"/>
+						</p1:GString.layoutData>
+					</p1:GString>
+					<p1:GCheck text="Enable FATFS file system support" manifestObj="true" widgetName="gcheck_fatfs_en" toolTipText="Enable usage of FAT file system &#13;&#10;that uses external SD memory card&#13;&#10;for storing server files." description="Enables use of FAT file system using FATFS APP. It additionally uses external mass storage APP like SDMMC for external memory access. The HTTP_SERVER APP makes use of standard C library API for file access. So the FATFS APP should be configured to support standard C library API.&lt;br&gt;&#13;&#10;HTTP_SERVER APP by default uses ETH_LWIP APP. So RTOS mode of both the APPs should be configured uniformly."/>
+					<p1:GLabel text="Drive number:" visible="true" manifestObj="true" widgetName="glabel_drive"/>
+					<p1:GCombo mandatory="(com.ifx.davex.ui.controls.util.AppUiConstants).FALSE" manifestObj="true" widgetName="gcombo_drive" options="0&#13;&#10;1&#13;&#10;2" value="0" toolTipText="FATFS drive number to be used for finding or updating web pages." description="The FATFS drive number to be used for looking up for web pages. The available options depend on the number of logical drives selected in the FATFS APP."/>
+					<p1:GGroup text="CGI" manifestObj="true" widgetName="ggroup_cgi" toolTipText="Common gateway interface">
+						<p1:GGroup.layoutData>
+							<GridData horizontalSpan="3" horizontalAlignment="FILL" grabExcessHorizontalSpace="true"/>
+						</p1:GGroup.layoutData>
+						<p1:GGroup.layout>
+							<GridLayout numColumns="2"/>
+						</p1:GGroup.layout>
+						<p1:GCheck text="Enable CGI support" manifestObj="true" widgetName="gcheck_cgi_en" toolTipText="Enable common gateway interface(CGI) support.&#13;&#10;Allows handling of URI parameters." description="Enables Common Gateway Interface scripting for dynamic content. It allows the application to handle arguments passed as part of the HTTP request URI."/>
+						<Label/>
+						<p1:GLabel text="Maximum number of CGI parameters:" visible="true" manifestObj="true" widgetName="glabel_cgi_params"/>
+						<p1:GInteger x:Style="NONE" minValue="1" maxValue="100" mandatory="(com.ifx.davex.ui.controls.util.AppUiConstants).FALSE" format="(com.ifx.davex.ui.controls.util.AppUiConstants).DEC" manifestObj="true" widgetName="ginteger_cgi_params" value="16" toolTipText="Maximum number of URI parameters to be supported.&#13;&#10;Used to limit the memory allocated for handling input parameters." description="Defines the maximum number of HTTP URI parameters to be supported.">
+							<p1:GInteger.layoutData>
+								<GridData widthHint="36" horizontalAlignment="FILL"/>
+							</p1:GInteger.layoutData>
+						</p1:GInteger>
+					</p1:GGroup>
+					<p1:GGroup text="SSI" manifestObj="true" widgetName="ggroup_ssi" toolTipText="Server side includes&#13;&#10;&lt;!---#name---&gt;">
+						<p1:GGroup.layoutData>
+							<GridData horizontalSpan="3" horizontalAlignment="FILL"/>
+						</p1:GGroup.layoutData>
+						<p1:GGroup.layout>
+							<GridLayout numColumns="2"/>
+						</p1:GGroup.layout>
+						<p1:GCheck text="Enable SSI support" manifestObj="true" widgetName="gcheck_ssi_en" toolTipText="Enable server side includes(SSI)&#13;&#10;Allows insertion of dynamic data into a response URI content&#13;&#10;where the SSI tag(&lt;!--#name---&gt;) is found.&#13;&#10;" description="Enables simple Server Side Include facility, where the HTML tag (&quot;&amp;lt;!--#tag--\&amp;gt;&quot;) acts as marker to insert user data."/>
+						<Label/>
+						<p1:GLabel text="Maximum length of SSI tag name:       " visible="true" manifestObj="true" widgetName="glabel_ssi_tag_len"/>
+						<p1:GInteger x:Style="NONE" minValue="1" maxValue="200" mandatory="(com.ifx.davex.ui.controls.util.AppUiConstants).FALSE" format="(com.ifx.davex.ui.controls.util.AppUiConstants).DEC" manifestObj="true" widgetName="ginteger_ssi_tag_len" value="10" toolTipText="Maximum length of a SSI tag name.&#13;&#10;&lt;!--#name--&gt; maximum length of &apos;#name&apos;." description="Defines the maximum length of the SSI tag name of the form &apos;#tag&apos; in &quot;&amp;lt;!--#tag--&amp;gt;&quot;.">
+							<p1:GInteger.layoutData>
+								<GridData widthHint="36" horizontalAlignment="FILL"/>
+							</p1:GInteger.layoutData>
+						</p1:GInteger>
+						<p1:GLabel text="Maximum length of insert string:" visible="true" manifestObj="true" widgetName="glabel_ssi_len"/>
+						<p1:GInteger x:Style="NONE" minValue="1" maxValue="2048" mandatory="(com.ifx.davex.ui.controls.util.AppUiConstants).FALSE" format="(com.ifx.davex.ui.controls.util.AppUiConstants).DEC" manifestObj="true" widgetName="ginteger_ssi_len" value="196" toolTipText="Maximum length of the string to be inserted &#13;&#10;where SSI tag is found." description="Defines the maximum length of the string to be inserted when a SSI tag of the form &quot;&amp;lt;!--#tag--&amp;gt;&quot; is found.">
+							<p1:GInteger.layoutData>
+								<GridData widthHint="36" horizontalAlignment="FILL"/>
+							</p1:GInteger.layoutData>
+						</p1:GInteger>
+						<p1:GCheck text="Send SSI tag" manifestObj="true" widgetName="gcheck_send_ssi_tag" value="true" toolTipText="The SSI tag will be sent in the HTML page" description="Selects whether the SSI tag will be sent in the HTML page or not."/>
+						<Label/>
+					</p1:GGroup>
+					<p1:GGroup text="POST" manifestObj="true" widgetName="ggroup_post" toolTipText="Callback function to be executed when &#13;&#10;POST data is received completely">
+						<p1:GGroup.layoutData>
+							<GridData horizontalSpan="3" horizontalAlignment="FILL"/>
+						</p1:GGroup.layoutData>
+						<p1:GGroup.layout>
+							<GridLayout numColumns="2"/>
+						</p1:GGroup.layout>
+						<p1:GCheck text="Enable POST support" manifestObj="true" widgetName="gcheck_post_en" toolTipText="Enable support for POST method type handling.&#13;&#10;Useful when the client has to provide data larger than 1024 bytes.&#13;&#10;POST handlers have to implemented by user." description="Enables support for HTTP POST method. HTML form submissions on client side typically use HTTP POST method."/>
+						<Label/>
+						<p1:GLabel text="POST received callback:                          " visible="true" manifestObj="true" widgetName="glabel_post_cb"/>
+						<p1:GString x:Style="BORDER" mandatory="(com.ifx.davex.ui.controls.util.AppUiConstants).FALSE" manifestObj="true" widgetName="gstring_post_cb" value="post_cb_handler" size="228, 21" description="Callback function to be called when the POST data is completely received.&lt;br&gt;&#13;&#10;Prototype:&lt;i&gt; void fnctn(HTTP_SERVER_POST_RESP_t * ptr_post_data);&lt;/i&gt;&lt;br&gt;&#13;&#10;The input argument is a structure that contains received data(post_buffer), size(post_data_size), POST request URI(post_target_uri), request header fields(http_request_hdr) and a pointer to string which holds the response URI(post_response_uri).  &lt;i&gt;post_response_uri&lt;/i&gt; represents the file to be returned as a response to the POST request. This pointer can be updated with the address of a string containing the URI of response file. If the URI is not updated in the callback function, the POST request URI itself will be provided as the response URI to the client." toolTipText="Callback function to be called when the POST data is completely received.&lt;br&gt;&#13;&#10;Prototype:&lt;i&gt; void fnctn(HTTP_SERVER_POST_RESP_t * ptr_post_data);&lt;/i&gt;">
+							<p1:GString.layoutData>
+								<GridData grabExcessHorizontalSpace="true" widthHint="238"/>
+							</p1:GString.layoutData>
+						</p1:GString>
+						<p1:GLabel text="POST buffer size:" visible="true" manifestObj="true" widgetName="glabel_post_buf" toolTipText="Size of the buffer to be used for storing &#13;&#10;data received in POST method."/>
+						<p1:GInteger x:Style="NONE" minValue="1" maxValue="1000000" mandatory="(com.ifx.davex.ui.controls.util.AppUiConstants).FALSE" format="(com.ifx.davex.ui.controls.util.AppUiConstants).DEC" manifestObj="true" widgetName="ginteger_post_buf" value="1024" toolTipText="Size of the buffer to be used for storing &#13;&#10;data received in POST method." description="Maximum size of the buffer where POST data should be stored. This buffer is statically defined.">
+							<p1:GInteger.layoutData>
+								<GridData widthHint="54"/>
+							</p1:GInteger.layoutData>
+						</p1:GInteger>
+					</p1:GGroup>
+					<p1:GGroup text="RTOS" manifestObj="true" widgetName="ggroup_rtos">
+						<p1:GGroup.layoutData>
+							<GridData horizontalSpan="3" horizontalAlignment="FILL"/>
+						</p1:GGroup.layoutData>
+						<p1:GGroup.layout>
+							<GridLayout numColumns="2"/>
+						</p1:GGroup.layout>
+						<p1:GLabel text="HTTP thread priority:" visible="true" manifestObj="true" widgetName="glabel_http_th_pr"/>
+						<p1:GCombo mandatory="(com.ifx.davex.ui.controls.util.AppUiConstants).FALSE" manifestObj="true" widgetName="gcombo_http_th_pr" options="Idle (lowest)&#13;&#10;Low&#13;&#10;Below Normal&#13;&#10;Normal&#13;&#10;Above Normal&#13;&#10;High&#13;&#10;Realtime (highest)" value="Low" toolTipText="RTOS thread priority for HTTP thread" description="Enabled when RTOS mode is selected in ETH_LWIP APP.&#13;&#10;Defines the RTOS thread priority of the thread handling HTTP requests.">
+							<p1:GCombo.layoutData>
+								<GridData horizontalAlignment="FILL"/>
+							</p1:GCombo.layoutData>
+						</p1:GCombo>
+						<p1:GLabel text="HTTP thread stack size (bytes):              " visible="true" manifestObj="true" widgetName="glabel_http_th_stksz" toolTipText="Stack size definition for HTTP thread"/>
+						<p1:GInteger x:Style="NONE" minValue="0" maxValue="1048576" mandatory="(com.ifx.davex.ui.controls.util.AppUiConstants).FALSE" format="(com.ifx.davex.ui.controls.util.AppUiConstants).DEC" manifestObj="true" widgetName="ginteger_http_th_stksz" value="2048" toolTipText="Stack size to be reserved for HTTP thread." description="Enabled when RTOS mode is selected in ETH_LWIP APP.&#13;&#10;Defines the RTOS thread stack size of the thread handling HTTP requests.&lt;br&gt;&#13;&#10;Based on options selected in the GUI, the thread stack size requirement changes since the options enable more code. &#13;&#10;Following list can give a hint in configuring the stack size.&lt;br&gt;&#13;&#10;&lt;ul&gt;&#13;&#10;&lt;li&gt;Without FATFS, minimum stack size = 512 bytes&#13;&#10;&lt;li&gt;With FATFS, minimum stack size = 1100 bytes&#13;&#10;&lt;/ul&gt;">
+							<p1:GInteger.layoutData>
+								<GridData widthHint="125" horizontalAlignment="FILL"/>
+							</p1:GInteger.layoutData>
+						</p1:GInteger>
+						<p1:GLabel text="Number of sessions:           " visible="true" manifestObj="true" widgetName="glabel_http_thr_cnt"/>
+						<p1:GInteger x:Style="NONE" minValue="1" maxValue="100" mandatory="(com.ifx.davex.ui.controls.util.AppUiConstants).FALSE" format="(com.ifx.davex.ui.controls.util.AppUiConstants).DEC" manifestObj="true" widgetName="ginteger_http_thr_cnt" value="1" toolTipText="Number of simultaneously active HTTP sessions" description="Specifies the number of simultaneously active HTTP sessions. Useful when multiple clients try to access the server or when complex web pages have to be served. The count is directly linked to number of struct netconns(MEMP_NUM_NETCONN) , simultaneously active TCP connections(MEMP_NUM_TCP_PCB) and listening TCP connections(MEMP_NUM_TCP_PCB_LISTEN). Please configure these values in ETH_LWIP APP-&gt;Memory Settings tab. &lt;br&gt;&#13;&#10;MEMP_NUM_NETCONN should be atleast equal to or greater than number of sessions + 2.&lt;br&gt;&#13;&#10;MEMP_NUM_TCP_PCB and MEMP_NUM_TCP_PCB_LISTEN can be equal to or greater than number of sessions.">
+							<p1:GInteger.layoutData>
+								<GridData widthHint="126" horizontalAlignment="FILL"/>
+							</p1:GInteger.layoutData>
+						</p1:GInteger>
+					</p1:GGroup>
+					<p1:GMessage text="RTOS error" visible="true" manifestObj="true" isError="true" widgetName="gmessage_rtos">
+						<p1:GMessage.layoutData>
+							<GridData horizontalSpan="3" horizontalAlignment="FILL"/>
+						</p1:GMessage.layoutData>
+					</p1:GMessage>
+				</p1:Tab>
+			</p1:GTab.control>
+		</p1:GTab>
+	</p1:TabFolder>
+</p1:Tab>

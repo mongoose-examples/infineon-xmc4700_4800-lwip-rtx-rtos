@@ -1,0 +1,86 @@
+package Model.APPS.HTTP_SERVER.v4_0_12;
+
+// Import statements
+import ifx.davex.app.manifest.*
+
+abstract class HTTP_SERVER_GUI extends AppManifest {
+
+    /* IMPORTANT NOTE: This is an auto generated file, please do not edit manually. */
+    /* User modifications in the GUI editor will be updated here automatically.     */
+    /* Manually editing the contents of this file will corrupt the APP SDK project. */
+
+	/* Begin : UI variable section */
+	 public GTab tab_general_settings;
+	 public GInteger ginteger_port_number;
+	 public GInteger ginteger_cgi_params;
+	 public GInteger ginteger_ssi_tag_len;
+	 public GInteger ginteger_ssi_len;
+	 public GInteger ginteger_post_buf;
+	 public GInteger ginteger_http_th_stksz;
+	 public GInteger ginteger_http_thr_cnt;
+	 public GCombo gcombo_drive;
+	 public GCombo gcombo_http_th_pr;
+	 public GString gstring_server_name;
+	 public GString gstring_post_cb;
+	 public GCheck gcheck_fatfs_en;
+	 public GCheck gcheck_cgi_en;
+	 public GCheck gcheck_ssi_en;
+	 public GCheck gcheck_send_ssi_tag;
+	 public GCheck gcheck_post_en;
+	 public GLabel glabel_port_number;
+	 public GLabel glabel_server_name;
+	 public GLabel glabel_drive;
+	 public GLabel glabel_cgi_params;
+	 public GLabel glabel_ssi_tag_len;
+	 public GLabel glabel_ssi_len;
+	 public GLabel glabel_post_cb;
+	 public GLabel glabel_post_buf;
+	 public GLabel glabel_http_th_pr;
+	 public GLabel glabel_http_th_stksz;
+	 public GLabel glabel_http_thr_cnt;
+	 public GGroup ggroup_cgi;
+	 public GGroup ggroup_ssi;
+	 public GGroup ggroup_post;
+	 public GGroup ggroup_rtos;
+	 public GMessage gmessage_rtos;
+
+	 public HTTP_SERVER_GUI(DaveEnv daveEnv){
+
+	 tab_general_settings = GTab(widgetName:"tab_general_settings", text:"General Settings", enabled:true, visible:true)
+	 ginteger_port_number = GInteger(widgetName:"ginteger_port_number", value:80, minValue:1, maxValue:65535, enabled:true, visible:true, isMandatoryValue:false)
+	 ginteger_cgi_params = GInteger(widgetName:"ginteger_cgi_params", value:16, minValue:1, maxValue:100, enabled:true, visible:true, isMandatoryValue:false)
+	 ginteger_ssi_tag_len = GInteger(widgetName:"ginteger_ssi_tag_len", value:10, minValue:1, maxValue:200, enabled:true, visible:true, isMandatoryValue:false)
+	 ginteger_ssi_len = GInteger(widgetName:"ginteger_ssi_len", value:196, minValue:1, maxValue:2048, enabled:true, visible:true, isMandatoryValue:false)
+	 ginteger_post_buf = GInteger(widgetName:"ginteger_post_buf", value:1024, minValue:1, maxValue:1000000, enabled:true, visible:true, isMandatoryValue:false)
+	 ginteger_http_th_stksz = GInteger(widgetName:"ginteger_http_th_stksz", value:2048, minValue:0, maxValue:1048576, enabled:true, visible:true, isMandatoryValue:false)
+	 ginteger_http_thr_cnt = GInteger(widgetName:"ginteger_http_thr_cnt", value:1, minValue:1, maxValue:100, enabled:true, visible:true, isMandatoryValue:false)
+	 gcombo_drive = GCombo(widgetName:"gcombo_drive", options:["0","1","2"], value:"0", enabled:true, visible:true, isMandatoryValue:false)
+	 gcombo_http_th_pr = GCombo(widgetName:"gcombo_http_th_pr", options:["Idle (lowest)","Low","Below Normal","Normal","Above Normal","High","Realtime (highest)"], value:"Low", enabled:true, visible:true, isMandatoryValue:false)
+	 gstring_server_name = GString(widgetName:"gstring_server_name", value:"lwIP", enabled:true, visible:true, isMandatoryValue:false)
+	 gstring_post_cb = GString(widgetName:"gstring_post_cb", value:"post_cb_handler", enabled:true, visible:true, isMandatoryValue:false)
+	 gcheck_fatfs_en = GCheck(widgetName:"gcheck_fatfs_en", value:false, enabled:true, visible:true)
+	 gcheck_cgi_en = GCheck(widgetName:"gcheck_cgi_en", value:false, enabled:true, visible:true)
+	 gcheck_ssi_en = GCheck(widgetName:"gcheck_ssi_en", value:false, enabled:true, visible:true)
+	 gcheck_send_ssi_tag = GCheck(widgetName:"gcheck_send_ssi_tag", value:true, enabled:true, visible:true)
+	 gcheck_post_en = GCheck(widgetName:"gcheck_post_en", value:false, enabled:true, visible:true)
+	 glabel_port_number = GLabel(widgetName:"glabel_port_number", text:"Port number:", enabled:true, visible:true)
+	 glabel_server_name = GLabel(widgetName:"glabel_server_name", text:"Name of the server:", enabled:true, visible:true)
+	 glabel_drive = GLabel(widgetName:"glabel_drive", text:"Drive number:", enabled:true, visible:true)
+	 glabel_cgi_params = GLabel(widgetName:"glabel_cgi_params", text:"Maximum number of CGI parameters:", enabled:true, visible:true)
+	 glabel_ssi_tag_len = GLabel(widgetName:"glabel_ssi_tag_len", text:"Maximum length of SSI tag name:       ", enabled:true, visible:true)
+	 glabel_ssi_len = GLabel(widgetName:"glabel_ssi_len", text:"Maximum length of insert string:", enabled:true, visible:true)
+	 glabel_post_cb = GLabel(widgetName:"glabel_post_cb", text:"POST received callback:                          ", enabled:true, visible:true)
+	 glabel_post_buf = GLabel(widgetName:"glabel_post_buf", text:"POST buffer size:", enabled:true, visible:true)
+	 glabel_http_th_pr = GLabel(widgetName:"glabel_http_th_pr", text:"HTTP thread priority:", enabled:true, visible:true)
+	 glabel_http_th_stksz = GLabel(widgetName:"glabel_http_th_stksz", text:"HTTP thread stack size (bytes):              ", enabled:true, visible:true)
+	 glabel_http_thr_cnt = GLabel(widgetName:"glabel_http_thr_cnt", text:"Number of sessions:           ", enabled:true, visible:true)
+	 ggroup_cgi = GGroup(widgetName:"ggroup_cgi", text:"CGI", enabled:true, visible:true)
+	 ggroup_ssi = GGroup(widgetName:"ggroup_ssi", text:"SSI", enabled:true, visible:true)
+	 ggroup_post = GGroup(widgetName:"ggroup_post", text:"POST", enabled:true, visible:true)
+	 ggroup_rtos = GGroup(widgetName:"ggroup_rtos", text:"RTOS", enabled:true, visible:true)
+	 gmessage_rtos = GMessage(widgetName:"gmessage_rtos", text:"RTOS error", isError:true, visible:true)
+
+
+	 }
+	/* End : UI variable section */
+}

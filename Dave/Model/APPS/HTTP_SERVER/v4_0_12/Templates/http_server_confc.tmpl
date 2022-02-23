@@ -1,0 +1,98 @@
+package Model.APPS.HTTP_SERVER.v4_0_12.Templates;
+
+import Model.APPS.HTTP_SERVER.v4_0_12.HTTP_SERVER
+
+out.print("""
+/**
+ * @cond
+ ***********************************************************************************************************************
+ *
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the
+ * following conditions are met:
+ *
+ *   Redistributions of source code must retain the above copyright notice, this list of conditions and the  following
+ *   disclaimer.
+ *
+ *   Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+ *   following disclaimer in the documentation and/or other materials provided with the distribution.
+ *
+ *   Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote
+ *   products derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT  OF THE
+ * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes
+ * with Infineon Technologies AG (dave@infineon.com).
+ ***********************************************************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2016-01-14:
+ *     - Initial version for DAVEv4.
+ *
+ * @endcond
+ *
+ */
+/***********************************************************************************************************************
+ * HEADER FILES
+ **********************************************************************************************************************/
+#include "http_server.h"
+""")
+
+for(HTTP_SERVER http_server_inst : appInstancesList)
+{
+	String http_server_name = http_server_inst.getInstanceLabel()
+
+out.print("""
+
+HTTP_SERVER_t ${http_server_name} =
+{
+  .lwip = &${http_server_inst.appres_lwip.getInstanceLabel()},""")
+if(http_server_inst.gcheck_fatfs_en.value)
+{
+	out.print("""
+  .fatfs = &${http_server_inst.appres_fatfs.getInstanceLabel()},""")
+}
+if(http_server_inst.gcheck_post_en.value)
+{
+out.print("""
+  .post_cbk = ${http_server_inst.gstring_post_cb.value},""")
+}
+out.print("""
+};""")
+
+if(http_server_inst.appres_lwip.getVal(["gcheck_rtos_en","value"]))
+{
+	out.print("""
+#include "CMSIS_RTOS/cmsis_rtos.h"
+
+#if (CMSIS_RTOS_RTX_PRIVCNT < 5)
+#error "HTTP_SERVER: requires at least 5 threads with user-provided stack size when running in an OS environment"
+#endif
+
+#if (CMSIS_RTOS_RTX_PRIVSTKSIZE < ${http_server_inst.ginteger_http_th_stksz.value + 
+                                    http_server_inst.appres_lwip.getVal(["ginteger_init_task_size","value"]) + 
+                                    http_server_inst.appres_lwip.getVal(["ginteger_tcpip_stacksize","value"]) + 
+                                    http_server_inst.appres_lwip.getVal(["ginteger_netif_task_stack_size","value"]) + 
+                                    http_server_inst.appres_lwip.getVal(["ginteger_phy_task_stack_size","value"])})
+#error "HTTP_SERVER: requires at least ${http_server_inst.ginteger_http_th_stksz.value + 
+                                    http_server_inst.appres_lwip.getVal(["ginteger_init_task_size","value"]) + 
+                                    http_server_inst.appres_lwip.getVal(["ginteger_tcpip_stacksize","value"]) + 
+                                    http_server_inst.appres_lwip.getVal(["ginteger_netif_task_stack_size","value"]) + 
+                                    http_server_inst.appres_lwip.getVal(["ginteger_phy_task_stack_size","value"])} bytes of stack size for threads with user-provided stack size"
+#endif
+
+    """)
+}
+
+}
