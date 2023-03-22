@@ -3,7 +3,7 @@ PROG = firmware
 PROJECT_ROOT_PATH = $(realpath $(CURDIR)/../..)
 DOCKER ?= docker run --rm -v $(PROJECT_ROOT_PATH):$(PROJECT_ROOT_PATH) -w $(CURDIR) mdashnet/armgcc
 
-CFLAGS = -MMD -MT -O0 -DXMC4700_F144x2048 -DMG_ARCH=MG_ARCH_RTX -DMG_ENABLE_LWIP=1 -DMAKE_BUILD -ffunction-sections -fdata-sections -fno-common -std=gnu99 -Wno-attributes -mfloat-abi=softfp -pipe -c -fmessage-length=0 -MMD -MP -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mthumb -g -gdwarf-2
+CFLAGS = -MMD -MT -O0 -DXMC4700_F144x2048 -DMG_ARCH=MG_ARCH_CMSIS_RTOS1 -DMG_ENABLE_LWIP=1 -DMAKE_BUILD -ffunction-sections -fdata-sections -fno-common -std=gnu99 -Wno-attributes -mfloat-abi=softfp -pipe -c -fmessage-length=0 -MMD -MP -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mthumb -g -gdwarf-2
 
 LINKFLAGS = -T"linker_script.ld" -nostartfiles -Xlinker --gc-sections -specs=nano.specs -specs=nosys.specs -mfloat-abi=softfp -mfpu=fpv4-sp-d16 -mcpu=cortex-m4 -mthumb -g -gdwarf-2 -lm
 
